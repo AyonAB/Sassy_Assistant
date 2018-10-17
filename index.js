@@ -1,9 +1,12 @@
+const dotenv = require("dotenv");
+dotenv.config();
 process.env.NTBA_FIX_319 = 1;
 
 const TelegramBot = require('node-telegram-bot-api');
  
 // replace the value below with the Telegram token you receive from @BotFather
-const token = '465875468:AAE108rfVRr6LEG_mifxsOLeRFVg27aO8lE';
+const token = process.env.BOT_API_KEY;
+
  
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, {polling: true});
