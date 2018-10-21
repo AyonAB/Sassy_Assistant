@@ -3,11 +3,23 @@ dotenv.config();
 process.env.NTBA_FIX_319 = 1;
 
 const TelegramBot = require('node-telegram-bot-api');
- 
+var admin = require("firebase-admin");
+
+//Connection to firebase
+var serviceAccount = require("./serviceAccountKey.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://tg-bot-e6ea8.firebaseio.com"
+});
+
+// Get a database reference
+var db = admin.database();
+var ref = db.ref("tg/");
+var sender = ref.child("senders");
 // replace the value below with the Telegram token you receive from @BotFather
 const token = process.env.BOT_API_KEY;
 
- 
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, {polling: true});
  
@@ -19,7 +31,13 @@ bot.onText(/\/start/, (msg, match) => {
  
   const chatId = msg.chat.id;
   //const resp = match[1]; // the captured "whatever"
- 
+
+  //Sending details to firebase
+  sender.set({
+      first_name: msg.from.first_name,
+      last_name: msg.from.last_name,
+      user_name: msg.from.username,
+  });
   // send back the matched "whatever" to the chat
   bot.sendMessage(chatId, "Welcome " + msg.from.first_name + " " + msg.from.last_name + ", I'm the personal assistant of @Fek_U_Bish aka ∆¥∆Ñ D∆$. Now what do you wanna know bout him! Lemme make it easy for yea, choose any from below!", 
     {
