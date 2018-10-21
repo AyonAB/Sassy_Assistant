@@ -15,8 +15,8 @@ admin.initializeApp({
 
 // Get a database reference
 var db = admin.database();
-var ref = db.ref("tg/");
-var sender = ref.child("senders");
+var send = db.ref("senders/");
+var love = db.ref("lovers/");
 // replace the value below with the Telegram token you receive from @BotFather
 const token = process.env.BOT_API_KEY;
 
@@ -33,7 +33,7 @@ bot.onText(/\/start/, (msg, match) => {
   //const resp = match[1]; // the captured "whatever"
 
   //Sending details to firebase
-  sender.set({
+  send.set({
       first_name: msg.from.first_name,
       last_name: msg.from.last_name,
       user_name: msg.from.username,
@@ -80,7 +80,11 @@ bot.on('message', (msg) => {
   } 
   if(msg.text.toString().toLowerCase() == 'you like him, send him love!' || msg.text.toString().toLowerCase().includes('i like him') || msg.text.toString().toLowerCase().includes('i love him')){
     var reply = "Thank you very much! Your love convoyed to him!";
-    console.log(msg.from.first_name + "\n" + msg.from.username);
+    love.set({
+      first_name: msg.from.first_name,
+      last_name: msg.from.last_name,
+      user_name: msg.from.username,
+  });
     bot.sendMessage(chatId, reply);
   }  
   if(msg.text.toString().toLowerCase().includes('bye')){
@@ -88,7 +92,7 @@ bot.on('message', (msg) => {
     bot.sendMessage(chatId, reply);
   }
   if(msg.text.toString().toLowerCase().includes('fuck') || msg.text.toString().toLowerCase().includes('fek')){
-    reply = "Excuse me! How dare you! I have Bf btw!";
+    reply = "Excuse me! How dare you! I have a Bf btw!";
     bot.sendMessage(chatId, reply);
   }
   //console.log(msg.text.toString().toLowerCase());
